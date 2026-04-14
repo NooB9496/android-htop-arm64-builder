@@ -4,8 +4,8 @@ set -e
 # ================================
 # Configuration
 # ================================
-API=33                              # Android 13+
-NDK_VERSION=r26b                    # Version NDK
+API=35                              # Android 15+
+NDK_VERSION=r29                    # Version NDK
 WORKDIR=$HOME/android-build
 PREFIX=$WORKDIR/install
 OUTPUT=$WORKDIR/output
@@ -26,24 +26,25 @@ fi
 export NDK=$HOME/android-ndk-$NDK_VERSION
 export PATH=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
 
-export CC=aarch64-linux-android$API-clang
-export CXX=aarch64-linux-android$API-clang++
-export AR=llvm-ar
-export LD=ld.lld
-export STRIP=llvm-strip
+TOOLCHAIN_DIR=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
+export CC="$TOOLCHAIN_DIR/aarch64-linux-android$API-clang"
+export CXX="$TOOLCHAIN_DIR/aarch64-linux-android$API-clang++"
+export AR="$TOOLCHAIN_DIR/llvm-ar"
+export LD="$TOOLCHAIN_DIR/ld.lld"
+export STRIP="$TOOLCHAIN_DIR/llvm-strip"p
 
 # ================================
 # Building ncurses
 # ================================
-if [ ! -d ncurses-6.4 ]; then
+if [ ! -d ncurses-6.6 ]; then
     echo "[+] Downloading ncurses..."
-    wget -q https://invisible-mirror.net/archives/ncurses/ncurses-6.4.tar.gz
-    tar xf ncurses-6.4.tar.gz
+    wget -q https://invisible-mirror.net/archives/ncurses/ncurses-6.6.tar.gz
+    tar xf ncurses-6.6.tar.gz
 fi
 
-cd ncurses-6.4
+cd ncurses-6.6
 echo "[+] Building ncurses..."
-./configure \
+./configure --disable-stripping \
     --host=aarch64-linux-android \
     --prefix=$PREFIX \
     --with-termlib \
