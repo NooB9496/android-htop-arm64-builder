@@ -6,5 +6,7 @@ The compiled htop binary is saved in the $OUTPUT/htop.
 You can run this script on your linux machine with x64 CPU.
 
 Just use this commands
+
 chmod +x ./build-htop.sh
+
 ./build-htop.sh
